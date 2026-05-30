@@ -14,11 +14,21 @@
   
   <div class="container">
     
-    <div class="card smart-card">
-      <h2>Smart OSINT Search</h2>
-      <p>Smart Scan: Domain / IP / Mail / Hash / Username (username:name) / Google Dorks (dork:keyword)</p>
-      <input type="text" id="smartInput" placeholder="...">
-      <button onclick="processSmartSearch()">Run Intelligence Check</button>
+    <div class="top-row">
+      <div class="card smart-card">
+        <h2>Smart OSINT Search</h2>
+        <p>Smart Scan: Domain / IP / Mail / Hash / Username (username:name) / Google Dorks (dork:keyword)</p>
+        <input type="text" id="smartInput" placeholder="...">
+        <button onclick="processSmartSearch()">Run Intelligence Check</button>
+      </div>
+
+      <div class="card geo-card">
+        <h2>Image & Geo Intelligence</h2>
+        <input type="file" id="imageInput" accept="image/jpeg, image/jpg">
+        <button onclick="analyzeImageMetadata()">Extract EXIF Data</button>
+        <div id="exifResults"></div>
+        <button onclick="openReverseImageSearch()" class="btn-dark">Open Reverse Image Engines</button>
+      </div>
     </div>
 
     <div id="resultsContainer" class="card results-card">
@@ -26,12 +36,37 @@
       <ul id="linksList"></ul>
     </div>
 
-    <div class="card geo-card">
-      <h2>Image & Geo Intelligence</h2>
-      <input type="file" id="imageInput" accept="image/jpeg, image/jpg">
-      <button onclick="analyzeImageMetadata()">Extract EXIF Data</button>
-      <div id="exifResults"></div>
-      <button onclick="openReverseImageSearch()" class="btn-dark">Open Reverse Image Engines</button>
+    <div class="card converter-card">
+      <h2>Multi-Format Converter</h2>
+      <p>Convert texts or hashes between different formats (Base64, Hex, Binary, URL, ASCII)</p>
+      
+      <div class="textarea-container">
+        <textarea id="converterInput" placeholder="Enter text or encoded data here..."></textarea>
+        <button class="btn-paste" onclick="pasteToInput()">PASTE</button>
+      </div>
+      
+      <div class="converter-controls">
+        <div class="select-wrapper">
+          <label for="conversionFormat">Format:</label>
+          <select id="conversionFormat">
+            <option value="base64">Base64</option>
+            <option value="hex">Hexadecimal</option>
+            <option value="binary">Binary</option>
+            <option value="url">URL Encode</option>
+            <option value="ascii">ASCII</option>
+          </select>
+        </div>
+        
+        <div class="converter-buttons">
+          <button class="btn-encode" onclick="encodeData()">Encode ➔</button>
+          <button class="btn-decode" onclick="decodeData()">Decode</button>
+        </div>
+      </div>
+
+      <div class="textarea-container">
+        <textarea id="converterOutput" placeholder="Result will appear here..." readonly></textarea>
+        <button class="btn-copy" onclick="copyFromOutput()">COPY</button>
+      </div>
     </div>
 
   </div>
