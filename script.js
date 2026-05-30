@@ -1,23 +1,14 @@
 function openTabs(urls) {
-
   const resultsContainer = document.getElementById("resultsContainer");
   const linksList = document.getElementById("linksList");
 
   if (resultsContainer && linksList) {
-
     linksList.innerHTML = "";
     resultsContainer.style.display = "block";
 
     urls.forEach(url => {
-
       const li = document.createElement("li");
-
-      li.innerHTML = `
-        <a href="${url}" target="_blank">
-          ${url}
-        </a>
-      `;
-
+      li.innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
       linksList.appendChild(li);
     });
   }
@@ -33,7 +24,6 @@ function openTabs(urls) {
 // ==========================================
 
 function processSmartSearch() {
-
   const input = document.getElementById("smartInput").value.trim();
 
   if (!input) {
@@ -49,42 +39,27 @@ function processSmartSearch() {
   const hashRegex = /^([a-fA-F0-9]{32}|[a-fA-F0-9]{40}|[a-fA-F0-9]{64})$/;
   const cleanInput = encodeURIComponent(input);
 
-  // ==========================================
   // DORK MODE
-  // ==========================================
-
   if (input.toLowerCase().startsWith("dork:")) {
-
     const queryDork = input.substring(5).trim();
-
     if (!queryDork) {
       alert("No dork keyword detected");
       return;
     }
-
     runSmartDorks(queryDork);
     return;
   }
 
-  // ==========================================
   // USERNAME MODE
-  // ==========================================
-
   if (input.toLowerCase().startsWith("username:")) {
-
     let username = input.substring(9).trim();
-
     if (!username) {
-
       alert("No username detected");
       return;
-
     }
-
     if (username.startsWith("@")) {
       username = username.substring(1);
     }
-
     const u = encodeURIComponent(username);
 
     openTabs([
@@ -102,12 +77,8 @@ function processSmartSearch() {
     return;
   }
 
-  // ==========================================
   // EMAIL
-  // ==========================================
-
   if (emailRegex.test(input)) {
-
     openTabs([
       `https://haveibeenpwned.com/account/${cleanInput}`,
       `https://www.google.com/search?q=%22${cleanInput}%22`,
@@ -117,12 +88,8 @@ function processSmartSearch() {
     return;
   }
 
-  // ==========================================
   // IP ADDRESS
-  // ==========================================
-
-if (ipv4Regex.test(input) || ipv6Regex.test(input)) {
-
+  if (ipv4Regex.test(input) || ipv6Regex.test(input)) {
     openTabs([
       `https://www.virustotal.com/gui/ip-address/${cleanInput}`,
       `https://www.abuseipdb.com/check/${cleanInput}`,
@@ -136,12 +103,8 @@ if (ipv4Regex.test(input) || ipv6Regex.test(input)) {
     return;
   }
 
-  // ==========================================
   // HASH
-  // ==========================================
-
   if (hashRegex.test(input)) {
-
     openTabs([
       `https://www.virustotal.com/gui/file/${cleanInput}`,
       `https://www.hybrid-analysis.com/search?query=${cleanInput}`,
@@ -150,12 +113,8 @@ if (ipv4Regex.test(input) || ipv6Regex.test(input)) {
     return;
   }
 
-  // ==========================================
   // DOMAIN / SUBDOMAIN
-  // ==========================================
-
   if (domainRegex.test(input)) {
-
     openTabs([
       `https://www.virustotal.com/gui/domain/${cleanInput}`,
       `https://urlscan.io/domain/${cleanInput}`,
@@ -167,10 +126,6 @@ if (ipv4Regex.test(input) || ipv6Regex.test(input)) {
     return;
   }
 
-  // ==========================================
-  // DEFAULT FALLBACK
-  // ==========================================
-
   alert("Unknown input type");
 }
 
@@ -179,21 +134,17 @@ if (ipv4Regex.test(input) || ipv6Regex.test(input)) {
 // ==========================================
 
 function runSmartDorks(keyword) {
-
   const k = encodeURIComponent(keyword);
-
   const dorkUrls = [
     `https://www.google.com/search?q=%22${k}%22+leak`,
     `https://www.google.com/search?q=%22${k}%22+breach`,
     `https://www.google.com/search?q=%22${k}%22+password`,
     `https://www.google.com/search?q=%22${k}%22+database`,
     `https://www.google.com/search?q=%22${k}%22+malware`,
-
     `https://www.google.com/search?q=%22${k}%22+filetype:pdf`,
     `https://www.google.com/search?q=%22${k}%22+filetype:doc`,
     `https://www.google.com/search?q=%22${k}%22+filetype:docx`,
     `https://www.google.com/search?q=%22${k}%22+filetype:xls`,
-
     `https://www.google.com/search?q=%22${k}%22+ext:sql`,
     `https://www.google.com/search?q=%22${k}%22+ext:json`,
     `https://www.google.com/search?q=%22${k}%22+ext:log`,
@@ -204,29 +155,19 @@ function runSmartDorks(keyword) {
   const linksList = document.getElementById("linksList");
 
   if (resultsContainer && linksList) {
-
     linksList.innerHTML = "";
     resultsContainer.style.display = "block";
 
     dorkUrls.forEach(url => {
-
       const li = document.createElement("li");
-
-      li.innerHTML = `
-        <a href="${url}" target="_blank">
-          ${url}
-        </a>
-      `;
+      li.innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
       linksList.appendChild(li);
     });
   }
 
   dorkUrls.forEach((url, index) => {
-
     setTimeout(() => {
-
       window.open(url, "_blank");
-
     }, index * 700);
   });
 }
@@ -241,7 +182,6 @@ function openReverseImageSearch() {
     `https://facecheck.id`,
     `https://pimeyes.com`
   ]);
-
 }
 
 // ==========================================
@@ -249,7 +189,6 @@ function openReverseImageSearch() {
 // ==========================================
 
 function analyzeImageMetadata() {
-
   const fileInput = document.getElementById("imageInput");
   const resultsDiv = document.getElementById("exifResults");
 
@@ -260,32 +199,20 @@ function analyzeImageMetadata() {
 
   const file = fileInput.files[0];
   const fileType = file.type;
-
   const fileExtension = file.name.split('.').pop();
 
   if (fileType !== "image/jpeg" && fileType !== "image/jpg") {
-
     resultsDiv.style.display = "block";
-
-    resultsDiv.innerHTML = `
-      <strong>Format Error:</strong>
-      .${fileExtension.toUpperCase()} is not supported for EXIF analysis.
-    `;
+    resultsDiv.innerHTML = `<strong>Format Error:</strong> .${fileExtension.toUpperCase()} is not supported for EXIF analysis.`;
     return;
   }
 
   EXIF.getData(file, function() {
-
     const allMetaData = EXIF.getAllTags(this);
 
     if (!allMetaData || Object.keys(allMetaData).length === 0) {
-
       resultsDiv.style.display = "block";
-
-      resultsDiv.innerHTML = `
-        <strong>Image without metadata:</strong>
-        The file is clean. Social media platforms strip EXIF data automatically.
-      `;
+      resultsDiv.innerHTML = `<strong>Image without metadata:</strong> The file is clean. Social media platforms strip EXIF data automatically.`;
       return;
     }
 
@@ -299,37 +226,18 @@ function analyzeImageMetadata() {
     `;
 
     if (allMetaData.GPSLatitude && allMetaData.GPSLongitude) {
-
       const latRef = allMetaData.GPSLatitudeRef || "N";
       const lonRef = allMetaData.GPSLongitudeRef || "E";
 
-      const latDec = convertDMSToDD(
-        allMetaData.GPSLatitude[0],
-        allMetaData.GPSLatitude[1],
-        allMetaData.GPSLatitude[2],
-        latRef
-      );
-
-      const lonDec = convertDMSToDD(
-        allMetaData.GPSLongitude[0],
-        allMetaData.GPSLongitude[1],
-        allMetaData.GPSLongitude[2],
-        lonRef
-      );
+      const latDec = convertDMSToDD(allMetaData.GPSLatitude[0], allMetaData.GPSLatitude[1], allMetaData.GPSLatitude[2], latRef);
+      const lonDec = convertDMSToDD(allMetaData.GPSLongitude[0], allMetaData.GPSLongitude[1], allMetaData.GPSLongitude[2], lonRef);
 
       htmlOutput += `
         <br>
-        <strong style="color:#00ff00;">
-          GPS Detected:
-        </strong>
-        ${latDec.toFixed(6)}, ${lonDec.toFixed(6)}
-        <br>
-        <a href="https://maps.google.com/?q=${latDec},${lonDec}" target="_blank">Google Maps</a>`;
+        <strong style="color:#00aa00;">GPS Detected:</strong> ${latDec.toFixed(6)}, ${lonDec.toFixed(6)}<br>
+        <a href="https://www.google.com/maps?q=${latDec},${lonDec}" target="_blank">Google Maps</a>`;
     } else {
-
-      htmlOutput += `
-        <br>
-        <strong>Geolocation:</strong>No GPS coordinates found.`;
+      htmlOutput += `<br><strong>Geolocation:</strong> No GPS coordinates found.`;
     }
 
     resultsDiv.style.display = "block";
@@ -337,16 +245,96 @@ function analyzeImageMetadata() {
   });
 }
 
-// ==========================================
-// GPS CONVERTER
-// ==========================================
-
 function convertDMSToDD(degrees, minutes, seconds, direction) {
-
   let dd = degrees + (minutes / 60) + (seconds / 3600);
-
   if (direction === "S" || direction === "W") {
     dd = dd * -1;
   }
   return dd;
+}
+
+// ==========================================
+// MULTI-FORMAT CONVERTER
+// ==========================================
+
+function encodeData() {
+  const input = document.getElementById("converterInput").value;
+  const format = document.getElementById("conversionFormat").value;
+  const outputField = document.getElementById("converterOutput");
+  
+  if (!input) { alert("Please provide text to encode."); return; }
+  
+  try {
+    let result = "";
+    if (format === "base64") {
+      result = btoa(unescape(encodeURIComponent(input)));
+    } else if (format === "hex") {
+      result = Array.from(new TextEncoder().encode(input)).map(b => b.toString(16).padStart(2, '0')).join('');
+    } else if (format === "binary") {
+      result = Array.from(new TextEncoder().encode(input)).map(b => b.toString(2).padStart(8, '0')).join(' ');
+    } else if (format === "url") {
+      result = encodeURIComponent(input);
+    } else if (format === "ascii") {
+      result = Array.from(input).map(char => char.charCodeAt(0)).join(', ');
+    }
+    outputField.value = result;
+  } catch (e) {
+    outputField.value = "Encoding Error: " + e.message;
+  }
+}
+
+function decodeData() {
+  const input = document.getElementById("converterInput").value.trim();
+  const format = document.getElementById("conversionFormat").value;
+  const outputField = document.getElementById("converterOutput");
+  
+  if (!input) { alert("Please provide data to decode."); return; }
+  
+  try {
+    let result = "";
+    if (format === "base64") {
+      result = decodeURIComponent(escape(atob(input)));
+    } else if (format === "hex") {
+      const cleanHex = input.replace(/\s+/g, '');
+      const bytes = new Uint8Array(cleanHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+      result = new TextDecoder().decode(bytes);
+    } else if (format === "binary") {
+      const cleanBinary = input.split(/\s+/);
+      const bytes = new Uint8Array(cleanBinary.map(bin => parseInt(bin, 2)));
+      result = new TextDecoder().decode(bytes);
+    } else if (format === "url") {
+      result = decodeURIComponent(input);
+    } else if (format === "ascii") {
+      const codes = input.split(/[\s,]+/);
+      result = codes.map(code => String.fromCharCode(parseInt(code, 10))).join('');
+    }
+    outputField.value = result;
+  } catch (e) {
+    outputField.value = "Decoding Error: Ensure the input matches the selected format criteria.";
+  }
+}
+
+// ==========================================
+// COPY & PASTE FUNCTIONS
+// ==========================================
+
+function pasteToInput() {
+  navigator.clipboard.readText()
+    .then(text => {
+      document.getElementById("converterInput").value = text;
+    })
+    .catch(err => {
+      alert("Could not paste text automatically. Please use Ctrl+V / Cmd+V");
+    });
+}
+
+function copyFromOutput() {
+  const outputText = document.getElementById("converterOutput").value;
+  if (!outputText) {
+    return; 
+  }
+  navigator.clipboard.writeText(outputText)
+    .catch(err => {
+      alert("Error copying text.");
+    });
 }
