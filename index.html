@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JY - OSINT & Threat Intelligence</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="img/icon.jpg">
+  <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+</head>
+
+<body>
+  <h1>OSINT & Threat Intelligence</h1>
+  
+  <div class="container">
+    
+    <div class="card smart-card">
+      <h2>Smart OSINT Search</h2>
+      <p>Smart Scan: Domain / IP / Mail / Hash / Username (username:name) / Google Dorks (dork:keyword)</p>
+      <input type="text" id="smartInput" placeholder="...">
+      <button onclick="processSmartSearch()">Run Intelligence Check</button>
+    </div>
+
+    <div id="resultsContainer" class="card results-card">
+      <h2>Generated Target Links</h2>
+      <ul id="linksList"></ul>
+    </div>
+
+    <div class="card geo-card">
+      <h2>Image & Geo Intelligence</h2>
+      <input type="file" id="imageInput" accept="image/jpeg, image/jpg">
+      <button onclick="analyzeImageMetadata()">Extract EXIF Data</button>
+      <div id="exifResults"></div>
+      <button onclick="openReverseImageSearch()" class="btn-dark">Open Reverse Image Engines</button>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <p>OSINT & Threat Intelligence Toolkit</p>
+    <p>Jiajun Ye</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
