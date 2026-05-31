@@ -113,7 +113,7 @@ function processSmartSearch() {
     return;
   }
 
-  // DOMAIN / SUBDOMAIN
+  // DOMAIN
   if (domainRegex.test(input)) {
     openTabs([
       `https://www.virustotal.com/gui/domain/${cleanInput}`,
@@ -267,7 +267,7 @@ function encodeData() {
   try {
     let result = "";
     
-    // 1. BASE64 ENCODE (Safe UTF-8)
+    // 1. BASE64 ENCODE
     if (format === "base64") {
       const bytes = new TextEncoder().encode(input);
       const binString = Array.from(bytes, byte => String.fromCharCode(byte)).join("");
@@ -303,7 +303,7 @@ function decodeData() {
   try {
     let result = "";
     
-    // 1. BASE64 DECODE (Safe UTF-8)
+    // 1. BASE64 DECODE
     if (format === "base64") {
       const binString = atob(input);
       const bytes = Uint8Array.from(binString, char => char.charCodeAt(0));

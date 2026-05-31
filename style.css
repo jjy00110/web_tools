@@ -88,10 +88,9 @@ textarea {
   font-family: monospace;
   resize: vertical;
   min-height: 100px;
-  margin-bottom: 0; /* Controlado por el contenedor */
+  margin-bottom: 0; 
 }
 
-/* Contenedor relativo para posicionar botones de Copiar/Pegar */
 .textarea-container {
   position: relative;
   width: 100%;
@@ -168,7 +167,6 @@ button:hover {
   color: #000000;
 }
 
-/* Estilos para controles del conversor */
 .converter-controls {
   display: flex;
   align-items: center;
@@ -193,7 +191,6 @@ button:hover {
   margin-bottom: 0;
 }
 
-/* Contenedor de Botones Encode y Decode simétricos */
 .converter-buttons {
   display: flex;
   gap: 15px;
@@ -202,12 +199,11 @@ button:hover {
 
 .converter-buttons button {
   margin-top: 0;
-  flex: 1; /* Mismo tamaño idéntico para ambos */
+  flex: 1; 
   height: 48px; 
   padding: 0;
 }
 
-/* Estilos específicos solicitados */
 .btn-encode {
   background: #ffffff;
   color: #000000;
