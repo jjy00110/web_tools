@@ -3,31 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JY - OSINT & Threat Intelligence</title>
+  <title>JY - Web Tools</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="img/icon.jpg">
+  <link rel="icon" href="img/icon.png">
   <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 
 <body>
-  <h1>OSINT & Threat Intelligence</h1>
+  <h1>Web Tools</h1>
   
   <div class="container">
     
-    <div class="top-row">
+    <div class="row">
       <div class="card smart-card">
-        <h2>Smart OSINT Search</h2>
-        <p>Smart Scan: Domain / IP / Mail / Hash / Username (username:name) / Google Dorks (dork:keyword)</p>
-        <input type="text" id="smartInput" placeholder="...">
-        <button onclick="processSmartSearch()">Run Intelligence Check</button>
+        <h2>OSINT Search</h2>
+        <p>Smart Scan: Domain / IP / Mail / Hash / Username (username:name) / <br> Google Dorks (dork:keyword)</p>
+        <input style="margin-top: 10px;" type="text" id="smartInput" placeholder="...">
+        <button style="margin-top: 10px;" onclick="processSmartSearch()">Analyze</button>
       </div>
 
       <div class="card geo-card">
-        <h2>Image & Geo Intelligence</h2>
-        <input type="file" id="imageInput" accept="image/jpeg, image/jpg">
+        <h2>Image Intelligence</h2>
+        
+        <label class="file-dropzone" style="margin-bottom: 20px;">
+          <input type="file" id="imageInput" accept="image/jpeg, image/jpg" onchange="updateFileName(this, 'file-chosen-geo')">
+          <span id="file-chosen-geo">ATTACH FILE</span>
+        </label>
+
         <button onclick="analyzeImageMetadata()">Extract EXIF Data</button>
         <div id="exifResults"></div>
-        <button onclick="openReverseImageSearch()" class="btn-dark">Open Reverse Image Engines</button>
+        <button style="margin-top: 20px;" onclick="openReverseImageSearch()" class="btn-dark">Open Reverse Image Engines</button>
       </div>
     </div>
 
@@ -36,42 +42,78 @@
       <ul id="linksList"></ul>
     </div>
 
-    <div class="card converter-card">
-      <h2>Multi-Format Converter</h2>
-      <p>Convert texts or hashes between different formats (Base64, Hex, Binary, ASCII)</p>
-      
-      <div class="textarea-container">
-        <textarea id="converterInput" placeholder="Enter text or encoded data here..."></textarea>
-        <button class="btn-paste" onclick="pasteToInput()">PASTE</button>
-      </div>
-      
-      <div class="converter-controls">
-        <div class="select-wrapper">
-          <label for="conversionFormat">Format:</label>
-          <select id="conversionFormat">
-            <option value="base64">Base64</option>
-            <option value="hex">Hexadecimal</option>
-            <option value="binary">Binary</option>
-            <option value="ascii">ASCII (Comma Separated)</option>
-          </select>
+    <div class="row">
+      <div class="card converter-card">
+        <h2>Converter</h2>
+        
+        <div class="textarea-container">
+          <textarea id="converterInput" placeholder="..." oninput="processLiveConversion()"></textarea>
+          <button class="btn-paste" onclick="pasteToInput()">PASTE</button>
         </div>
         
-        <div class="converter-buttons">
-          <button class="btn-encode" onclick="encodeData()">Encode ➔</button>
-          <button class="btn-decode" onclick="decodeData()">Decode</button>
+        <div class="converter-controls">
+          <div class="select-wrapper">
+            <label for="conversionFormat">Format:</label>
+            <select id="conversionFormat" onchange="processLiveConversion()">
+              <option value="base64">Base64</option>
+              <option value="hex">Hexadecimal</option>
+              <option value="binary">Binary</option>
+              <option value="ascii">ASCII (Comma Separated)</option>
+            </select>
+          </div>
+          
+          <div class="converter-buttons">
+            <button id="btnToggleDirection" class="btn-encode" onclick="toggleConversionDirection()">Mode: Encode ➔</button>
+          </div>
+        </div>
+
+        <div class="textarea-container" style="margin-bottom: 0; margin-top: 5px;" >
+          <textarea id="converterOutput" placeholder="..." readonly style="min-height: 180px;"></textarea>
+          <button class="btn-copy" onclick="copyFromOutput()">COPY</button>
         </div>
       </div>
 
-      <div class="textarea-container">
-        <textarea id="converterOutput" placeholder="Result will appear here..." readonly></textarea>
-        <button class="btn-copy" onclick="copyFromOutput()">COPY</button>
+      <div class="card hash-generator-card">
+        <h2>Hashing</h2>
+        
+        <div class="textarea-container">
+          <textarea id="hashInputText" placeholder="..." oninput="generateHash()"></textarea>
+          <button class="btn-paste" onclick="pasteToHashInput()">PASTE</button>
+        </div>
+
+        <label class="file-dropzone">
+          <input type="file" id="hashInputFile" onchange="generateFileHashAndName(this)">
+          <span id="file-chosen-hash">ATTACH FILE</span>
+        </label>
+
+        <div class="converter-controls" style="margin-bottom: 15px;">
+          <div class="select-wrapper">
+            <label for="hashAlgorithm">Algorithm:</label>
+            <select id="hashAlgorithm" onchange="updateHashSelection()">
+              <option value="md5">MD5</option>
+              <option value="sha1">SHA-1</option>
+              <option value="sha256" selected>SHA-256</option>
+            </select>
+          </div>
+          <div class="converter-buttons" style="flex: 0.5;">
+            <button class="btn-encode" onclick="copyFromHashOutput()" style="height: 48px; font-size: 13px; padding: 0 10px;">COPY</button>
+          </div>
+        </div>
+
+        <div class="hash-outputs" style="margin-bottom: 20px;">
+          <div class="hash-field">
+            <input type="text" id="outputHash" placeholder="" readonly onclick="this.select()">
+          </div>
+        </div>
+
+        <button id="btnAnalyzeHash" class="btn-dark" onclick="analyzeGeneratedHash()" disabled>Analyze</button>
       </div>
     </div>
 
   </div>
 
-  <div class="footer">
-    <p>OSINT & Threat Intelligence Toolkit</p>
+  <div class="footer" style="font-size: 20px">
+    <p>Web Tools</p>
     <p>Jiajun Ye</p>
   </div>
 

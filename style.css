@@ -21,20 +21,20 @@ h1{
 }
 
 .container{
-  max-width: 1000px; 
+  max-width: 100%; 
   margin: auto;
   display: flex;
   flex-direction: column; 
   gap: 25px; 
 }
 
-.top-row {
+.row {
   display: flex;
   gap: 25px;
   width: 100%;
 }
 
-.top-row .card {
+.row .card {
   flex: 1; 
   min-width: 0; 
 }
@@ -47,7 +47,7 @@ h1{
   flex-direction: column;
 }
 
-.smart-card, .geo-card, .converter-card {
+.smart-card, .geo-card, .converter-card, .hash-generator-card {
   background: #ffffff;
 }
 
@@ -146,13 +146,20 @@ button{
   transition:0.2s;
 }
 
+button:disabled {
+  border-color: #cccccc;
+  color: #cccccc;
+  cursor: not-allowed;
+  background: #fafafa !important;
+}
+
 input + button,
 #exifResults + button,
 button + button {
   margin-top: 15px;
 }
 
-button:hover {
+button:hover:not(:disabled) {
   background: #000000;
   color: #ffffff;
 }
@@ -162,7 +169,7 @@ button:hover {
   color: #fff;
 }
 
-.btn-dark:hover {
+.btn-dark:hover:not(:disabled) {
   background: #ffffff;
   color: #000000;
 }
@@ -224,6 +231,32 @@ button:hover {
   color: #000000;
 }
 
+.hash-outputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hash-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hash-label {
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 14px;
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.hash-field input {
+  margin-bottom: 0;
+  font-family: monospace;
+  background: #fafafa;
+}
+
 #exifResults {
   font-family: monospace;
   font-size: 15px;
@@ -279,9 +312,8 @@ p{
   font-family: monospace;
 }
 
-/* Responsividad para móviles */
 @media (max-width: 768px) {
-  .top-row {
+  .row {
     flex-direction: column;
   }
   .converter-controls {
@@ -294,4 +326,45 @@ p{
   .converter-buttons {
     width: 100%;
   }
+  .hash-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}
+
+.file-dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  border: 1px dashed #000000;
+  background: #ffffff;
+  cursor: pointer;
+  margin-bottom: 15px;
+  transition: 0.2s ease-in-out;
+  padding: 10px;
+}
+
+.file-dropzone input[type="file"] {
+  display: none;
+}
+
+.file-dropzone span {
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: bold;
+  color: #000000;
+  text-align: center;
+  word-break: break-all;
+}
+
+.file-dropzone:hover {
+  background: #000000;
+  border-style: solid;
+}
+
+.file-dropzone:hover span {
+  color: #ffffff;
 }

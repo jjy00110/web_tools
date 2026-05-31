@@ -254,87 +254,192 @@ function convertDMSToDD(degrees, minutes, seconds, direction) {
 }
 
 // ==========================================
-// MULTI-FORMAT CONVERTER
+// INTERFACE CONTROLS & FILE HANDLING
 // ==========================================
 
-function encodeData() {
+function updateFileName(input, spanId) {
+  const span = document.getElementById(spanId);
+  if (input.files && input.files.length > 0) {
+    span.textContent = input.files[0].name;
+  } else {
+    span.textContent = "ATTACH FILE";
+  }
+}
+
+function generateFileHashAndName(input) {
+  updateFileName(input, 'file-chosen-hash');
+  generateFileHash();
+}
+
+// ==========================================
+// CONVERTER 
+// ==========================================
+
+let isEncodingMode = true; 
+
+function toggleConversionDirection() {
+  isEncodingMode = !isEncodingMode;
+  const btn = document.getElementById("btnToggleDirection");
+  
+  if (isEncodingMode) {
+    btn.textContent = "Mode: Encode ➔";
+    btn.className = "btn-encode";
+  } else {
+    btn.textContent = "Mode: ➔ Decode";
+    btn.className = "btn-decode";
+  }
+  
+  processLiveConversion();
+}
+
+function processLiveConversion() {
   const input = document.getElementById("converterInput").value;
   const format = document.getElementById("conversionFormat").value;
   const outputField = document.getElementById("converterOutput");
-  
-  if (!input) { alert("Please provide text to encode."); return; }
-  
+
+  if (!input) {
+    outputField.value = "";
+    return;
+  }
+
+  if (isEncodingMode) {
+    liveEncode(input, format, outputField);
+  } else {
+    liveDecode(input.trim(), format, outputField);
+  }
+}
+
+function liveEncode(input, format, outputField) {
   try {
     let result = "";
-    
-    // 1. BASE64 ENCODE
     if (format === "base64") {
       const bytes = new TextEncoder().encode(input);
       const binString = Array.from(bytes, byte => String.fromCharCode(byte)).join("");
       result = btoa(binString);
-      
-    // 2. HEXADECIMAL ENCODE
     } else if (format === "hex") {
       result = Array.from(new TextEncoder().encode(input)).map(b => b.toString(16).padStart(2, '0')).join('');
-      
-    // 3. BINARY ENCODE
     } else if (format === "binary") {
       const bytes = new TextEncoder().encode(input);
       result = Array.from(bytes).map(b => b.toString(2).padStart(8, '0')).join(' ');
-      
-    // 4. ASCII ENCODE
     } else if (format === "ascii") {
       result = Array.from(input).map(char => char.charCodeAt(0)).join(', ');
     }
-    
     outputField.value = result;
   } catch (e) {
     outputField.value = "Encoding Error: " + e.message;
   }
 }
 
-function decodeData() {
-  const input = document.getElementById("converterInput").value.trim();
-  const format = document.getElementById("conversionFormat").value;
-  const outputField = document.getElementById("converterOutput");
-  
-  if (!input) { alert("Please provide data to decode."); return; }
-  
+function liveDecode(input, format, outputField) {
   try {
     let result = "";
-    
-    // 1. BASE64 DECODE
     if (format === "base64") {
       const binString = atob(input);
       const bytes = Uint8Array.from(binString, char => char.charCodeAt(0));
       result = new TextDecoder().decode(bytes);
-      
-    // 2. HEXADECIMAL DECODE
     } else if (format === "hex") {
       const cleanHex = input.replace(/\s+/g, '');
       if (cleanHex.length % 2 !== 0) throw new Error("Invalid Hex length.");
       const bytes = new Uint8Array(cleanHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
       result = new TextDecoder().decode(bytes);
-      
-    // 3. BINARY DECODE
     } else if (format === "binary") {
       const cleanBinary = input.split(/\s+/).filter(bin => bin.length > 0);
-      if (cleanBinary.some(bin => !/^[01]+$/.test(bin))) {
-        throw new Error("Invalid binary format. Only 0s and 1s allowed.");
-      }
+      if (cleanBinary.some(bin => !/^[01]+$/.test(bin))) throw new Error("Invalid binary format.");
       const bytes = new Uint8Array(cleanBinary.map(bin => parseInt(bin, 2)));
       result = new TextDecoder().decode(bytes);
-      
-    // 4. ASCII DECODE
     } else if (format === "ascii") {
       const codes = input.split(/[\s,]+/).filter(c => c.length > 0);
       result = codes.map(code => String.fromCharCode(parseInt(code, 10))).join('');
     }
-    
     outputField.value = result;
   } catch (e) {
     outputField.value = "Decoding Error: " + e.message;
   }
+}
+
+// ==========================================
+// HASH GENERATOR
+// ==========================================
+
+let currentFileWordArray = null; 
+
+function updateHashSelection() {
+  const algorithm = document.getElementById("hashAlgorithm").value.toUpperCase();
+  document.getElementById("activeHashLabel").textContent = algorithm + ":";
+  
+  if (currentFileWordArray) {
+    calculateAndDisplayHash(currentFileWordArray);
+  } else {
+    generateHash();
+  }
+}
+
+function generateHash() {
+  const text = document.getElementById("hashInputText").value;
+  
+  if (text) {
+    document.getElementById("hashInputFile").value = "";
+    document.getElementById("file-chosen-hash").textContent = "ATTACH FILE";
+    currentFileWordArray = null;
+  }
+
+  if (!text) {
+    clearHashFields();
+    return;
+  }
+
+  calculateAndDisplayHash(text);
+}
+
+function generateFileHash() {
+  const fileInput = document.getElementById("hashInputFile");
+  if (!fileInput.files || fileInput.files.length === 0) return;
+
+  document.getElementById("hashInputText").value = "";
+  const file = fileInput.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    const arrayBuffer = e.target.result;
+    currentFileWordArray = CryptoJS.lib.WordArray.create(arrayBuffer);
+    calculateAndDisplayHash(currentFileWordArray);
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+
+function calculateAndDisplayHash(sourceData) {
+  const algo = document.getElementById("hashAlgorithm").value;
+  let hashResult = "";
+
+  if (algo === "md5") {
+    hashResult = CryptoJS.MD5(sourceData).toString();
+  } else if (algo === "sha1") {
+    hashResult = CryptoJS.SHA1(sourceData).toString();
+  } else if (algo === "sha256") {
+    hashResult = CryptoJS.SHA256(sourceData).toString();
+  }
+
+  document.getElementById("outputHash").value = hashResult;
+  document.getElementById("btnAnalyzeHash").disabled = !hashResult;
+}
+
+function analyzeGeneratedHash() {
+  const hashValue = document.getElementById("outputHash").value.trim();
+  if (!hashValue) return;
+
+  const cleanInput = encodeURIComponent(hashValue);
+
+  openTabs([
+    `https://www.virustotal.com/gui/file/${cleanInput}`,
+    `https://www.hybrid-analysis.com/search?query=${cleanInput}`,
+    `https://bazaar.abuse.ch/browse.php?search=${cleanInput}`
+  ]);
+}
+
+function clearHashFields() {
+  document.getElementById("outputHash").value = "";
+  document.getElementById("btnAnalyzeHash").disabled = true;
 }
 
 // ==========================================
@@ -345,6 +450,18 @@ function pasteToInput() {
   navigator.clipboard.readText()
     .then(text => {
       document.getElementById("converterInput").value = text;
+      processLiveConversion(); 
+    })
+    .catch(err => {
+      alert("Could not paste text automatically. Please use Ctrl+V / Cmd+V");
+    });
+}
+
+function pasteToHashInput() {
+  navigator.clipboard.readText()
+    .then(text => {
+      document.getElementById("hashInputText").value = text;
+      generateHash(); 
     })
     .catch(err => {
       alert("Could not paste text automatically. Please use Ctrl+V / Cmd+V");
@@ -353,11 +470,21 @@ function pasteToInput() {
 
 function copyFromOutput() {
   const outputText = document.getElementById("converterOutput").value;
-  if (!outputText) {
-    return; 
-  }
+  if (!outputText) return; 
   navigator.clipboard.writeText(outputText)
     .catch(err => {
       alert("Error copying text.");
+    });
+}
+
+function copyFromHashOutput() {
+  const hashText = document.getElementById("outputHash").value;
+  if (!hashText) {
+    alert("No hash generated to copy.");
+    return;
+  }
+  navigator.clipboard.writeText(hashText)
+    .catch(err => {
+      alert("Error copying hash.");
     });
 }
