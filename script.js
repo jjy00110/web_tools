@@ -266,17 +266,27 @@ function encodeData() {
   
   try {
     let result = "";
+    
+    // 1. BASE64 ENCODE (Safe UTF-8)
     if (format === "base64") {
-      result = btoa(unescape(encodeURIComponent(input)));
+      const bytes = new TextEncoder().encode(input);
+      const binString = Array.from(bytes, byte => String.fromCharCode(byte)).join("");
+      result = btoa(binString);
+      
+    // 2. HEXADECIMAL ENCODE
     } else if (format === "hex") {
       result = Array.from(new TextEncoder().encode(input)).map(b => b.toString(16).padStart(2, '0')).join('');
+      
+    // 3. BINARY ENCODE
     } else if (format === "binary") {
-      result = Array.from(new TextEncoder().encode(input)).map(b => b.toString(2).padStart(8, '0')).join(' ');
-    } else if (format === "url") {
-      result = encodeURIComponent(input);
+      const bytes = new TextEncoder().encode(input);
+      result = Array.from(bytes).map(b => b.toString(2).padStart(8, '0')).join(' ');
+      
+    // 4. ASCII ENCODE
     } else if (format === "ascii") {
       result = Array.from(input).map(char => char.charCodeAt(0)).join(', ');
     }
+    
     outputField.value = result;
   } catch (e) {
     outputField.value = "Encoding Error: " + e.message;
@@ -292,25 +302,38 @@ function decodeData() {
   
   try {
     let result = "";
+    
+    // 1. BASE64 DECODE (Safe UTF-8)
     if (format === "base64") {
-      result = decodeURIComponent(escape(atob(input)));
+      const binString = atob(input);
+      const bytes = Uint8Array.from(binString, char => char.charCodeAt(0));
+      result = new TextDecoder().decode(bytes);
+      
+    // 2. HEXADECIMAL DECODE
     } else if (format === "hex") {
       const cleanHex = input.replace(/\s+/g, '');
+      if (cleanHex.length % 2 !== 0) throw new Error("Invalid Hex length.");
       const bytes = new Uint8Array(cleanHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
       result = new TextDecoder().decode(bytes);
+      
+    // 3. BINARY DECODE
     } else if (format === "binary") {
-      const cleanBinary = input.split(/\s+/);
+      const cleanBinary = input.split(/\s+/).filter(bin => bin.length > 0);
+      if (cleanBinary.some(bin => !/^[01]+$/.test(bin))) {
+        throw new Error("Invalid binary format. Only 0s and 1s allowed.");
+      }
       const bytes = new Uint8Array(cleanBinary.map(bin => parseInt(bin, 2)));
       result = new TextDecoder().decode(bytes);
-    } else if (format === "url") {
-      result = decodeURIComponent(input);
+      
+    // 4. ASCII DECODE
     } else if (format === "ascii") {
-      const codes = input.split(/[\s,]+/);
+      const codes = input.split(/[\s,]+/).filter(c => c.length > 0);
       result = codes.map(code => String.fromCharCode(parseInt(code, 10))).join('');
     }
+    
     outputField.value = result;
   } catch (e) {
-    outputField.value = "Decoding Error: Ensure the input matches the selected format criteria.";
+    outputField.value = "Decoding Error: " + e.message;
   }
 }
 
