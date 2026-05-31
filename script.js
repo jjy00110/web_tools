@@ -108,7 +108,6 @@ function processSmartSearch() {
     openTabs([
       `https://www.virustotal.com/gui/file/${cleanInput}`,
       `https://www.hybrid-analysis.com/search?query=${cleanInput}`,
-      `https://bazaar.abuse.ch/browse.php?search=${cleanInput}`
     ]);
     return;
   }
@@ -433,7 +432,6 @@ function analyzeGeneratedHash() {
   openTabs([
     `https://www.virustotal.com/gui/file/${cleanInput}`,
     `https://www.hybrid-analysis.com/search?query=${cleanInput}`,
-    `https://bazaar.abuse.ch/browse.php?search=${cleanInput}`
   ]);
 }
 
