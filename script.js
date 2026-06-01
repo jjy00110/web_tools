@@ -486,3 +486,55 @@ function copyFromHashOutput() {
       alert("Error copying hash.");
     });
 }
+
+// ==========================================
+// DRAG AND DROP HANDLERS (NUEVO)
+// ==========================================
+
+function handleDragOver(e, element) {
+  e.preventDefault();
+  e.stopPropagation();
+  element.style.background = "#000000";
+  element.querySelector("span").style.color = "#ffffff";
+  element.style.borderStyle = "solid";
+}
+
+function handleDragLeave(e, element) {
+  e.preventDefault();
+  e.stopPropagation();
+  element.style.background = "#ffffff";
+  element.querySelector("span").style.color = "#000000";
+  element.style.borderStyle = "dashed";
+}
+
+function handleFileDrop(e, element, inputId, spanId, successCallback) {
+  e.preventDefault();
+  e.stopPropagation();
+  
+  element.style.background = "#ffffff";
+  element.querySelector("span").style.color = "#000000";
+  element.style.borderStyle = "dashed";
+
+  const dt = e.dataTransfer;
+  const files = dt.files;
+
+  if (files && files.length > 0) {
+    const fileInput = document.getElementById(inputId);
+    fileInput.files = files; 
+    
+    updateFileName(fileInput, spanId); 
+    
+    if (typeof successCallback === "function") {
+      successCallback(); 
+    }
+  }
+}
+
+function analyzeDroppedImage() {
+  analyzeImageMetadata();
+}
+
+function analyzeManualImage(input) {
+  updateFileName(input, 'file-chosen-geo');
+  analyzeImageMetadata();                  
+}

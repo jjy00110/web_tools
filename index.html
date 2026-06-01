@@ -26,14 +26,16 @@
       <div class="card geo-card">
         <h2>Image Intelligence</h2>
         
-        <label class="file-dropzone" style="margin-bottom: 20px;">
-          <input type="file" id="imageInput" accept="image/jpeg, image/jpg" onchange="updateFileName(this, 'file-chosen-geo')">
+        <label class="file-dropzone" style="margin-top: 10px; padding: 45px;"
+              ondragover="handleDragOver(event, this)" 
+              ondragleave="handleDragLeave(event, this)" 
+              ondrop="handleFileDrop(event, this, 'imageInput', 'file-chosen-geo', analyzeDroppedImage)">
+          <input type="file" id="imageInput" accept="image/jpeg, image/jpg" onchange="analyzeManualImage(this)">
           <span id="file-chosen-geo">ATTACH FILE</span>
         </label>
 
-        <button onclick="analyzeImageMetadata()">Extract EXIF Data</button>
         <div id="exifResults"></div>
-        <button style="margin-top: 20px;" onclick="openReverseImageSearch()" class="btn-dark">Open Reverse Image Engines</button>
+        <button style="margin-top: 10px;" onclick="openReverseImageSearch()" class="btn-dark">Open Reverse Image Engines</button>
       </div>
     </div>
 
@@ -81,7 +83,10 @@
           <button class="btn-paste" onclick="pasteToHashInput()">PASTE</button>
         </div>
 
-        <label class="file-dropzone">
+        <label class="file-dropzone"
+               ondragover="handleDragOver(event, this)" 
+               ondragleave="handleDragLeave(event, this)" 
+               ondrop="handleFileDrop(event, this, 'hashInputFile', 'file-chosen-hash', generateFileHash)">
           <input type="file" id="hashInputFile" onchange="generateFileHashAndName(this)">
           <span id="file-chosen-hash">ATTACH FILE</span>
         </label>
