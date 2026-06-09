@@ -32,15 +32,11 @@ Generates and inspects digital fingerprints. Supports either direct text input o
 
 ---
 
-## 📦 Local Installation & Deployment
+## Local Installation & Deployment
 
 Since this project has zero backend requirements or server-side dependencies, it can be cloned and run instantly.
 
 ### 1. Run Locally
-Clone the repository to your workstation and open the main entry point:
+Clone the repository to your workstation and open the main URL:
 ```bash
-# Clone the repository
-git clone [https://github.com/jjy00110/web_tools.git](https://github.com/jjy00110/web_tools.git)
-
-# Navigate into the project directory
-cd web_tools
+https://jjy00110.github.io/web_tools/
